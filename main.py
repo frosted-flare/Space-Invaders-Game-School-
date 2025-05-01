@@ -1,6 +1,7 @@
 ## Python Modules And Imports ##
 
 import pygame, sys
+from spaceship import Spaceship
 
 ## Initialize  Modules
 
@@ -8,8 +9,8 @@ pygame.init()
 
 ## Constants ##
 
-SCREEN_WIDTH = 750
-SCREEN_HEIGHT = 700
+SCREEN_WIDTH = 224
+SCREEN_HEIGHT = 256
 
 GREY = (29,29,27)
 
@@ -22,6 +23,12 @@ pygame.display.set_caption("Python Space Invaders")
 
 clock = pygame.time.Clock()
 
+## Spcaeship ##
+
+spaceship = Spaceship(SCREEN_WIDTH,SCREEN_HEIGHT)
+spaceship_group = pygame.sprite.GroupSingle()
+spaceship_group.add(spaceship)
+
 def main():
     
     while True:
@@ -32,15 +39,20 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+
+        ## Updating ##
         
+        spaceship_group.update()
+         
         ## Drawing ##
 
         screen.fill(GREY)
+        spaceship_group.draw(screen)
 
         ## Update The Display ##
 
         pygame.display.update()
-        clock.tick()
+        clock.tick(60)
 
 
 
