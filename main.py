@@ -2,6 +2,7 @@
 
 import pygame, sys
 from spaceship import Spaceship
+from laser import Laser
 
 ## Initialize  Modules
 
@@ -9,10 +10,10 @@ pygame.init()
 
 ## Constants ##
 
-SCREEN_WIDTH = 224
-SCREEN_HEIGHT = 256
+SCREEN_WIDTH = 448
+SCREEN_HEIGHT = 512
 
-GREY = (29,29,27)
+BLUE = (0,0,255)
 
 ## Display ##
 
@@ -28,6 +29,8 @@ clock = pygame.time.Clock()
 spaceship = Spaceship(SCREEN_WIDTH,SCREEN_HEIGHT)
 spaceship_group = pygame.sprite.GroupSingle()
 spaceship_group.add(spaceship)
+
+
 
 def main():
     
@@ -46,8 +49,10 @@ def main():
          
         ## Drawing ##
 
-        screen.fill(GREY)
+        screen.fill(BLUE)
+        spaceship_group.sprite.lasers_group.draw(screen)
         spaceship_group.draw(screen)
+
 
         ## Update The Display ##
 

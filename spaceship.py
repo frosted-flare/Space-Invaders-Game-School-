@@ -1,4 +1,5 @@
 import pygame
+from laser import Laser
 
 class Spaceship(pygame.sprite.Sprite):
 
@@ -7,9 +8,13 @@ class Spaceship(pygame.sprite.Sprite):
 
         self.screen_width = screen_width
         self.screen_height = screen_height
-        self.image = pygame.image.load("Sprites/Player.png")
+        self.image = pygame.image.load("Sprites/Player1.png")
         self.rect = self.image.get_rect(midbottom = (self.screen_width/2,self.screen_height))
-        self.speed = 1
+        self.speed = 2
+        self.lasers_group = pygame.sprite.Group()
+        self.laser_ready = True
+        self.laser_time = 0
+        self.laser_delay = 300
 
     def get_user_input(self):
         keys = pygame.key.get_pressed()
@@ -19,15 +24,30 @@ class Spaceship(pygame.sprite.Sprite):
 
         if keys[pygame.K_LEFT]:
             self.rect.x -= self.speed
+
+        if keys[pygame.K_SPACE] and self.laser_ready:
+            self.laser_ready = False
+            laser = Laser((self.rect.centerx-10,self.rect.centery),5,self.screen_height)
+            self.lasers_group.add(laser)
+            self.laser_time = pygame.time.get_ticks()
+
     
     def update(self):
         self.get_user_input()
         self.constrain_movement()
+        self.lasers_group.update()
+        self.recharge_laser()
     
     def constrain_movement(self):
         if self.rect.right > self.screen_width:
             self.rect.right = self.screen_width
         if self.rect.left < 0:
             self.rect.left = 0
+    
+    def recharge_laser(self):
+        if not self.laser_ready:
+            current_time = pygame.time.get_ticks()
+            if current_time - self.laser_time >= self.laser_delay:
+                self.laser_ready = True
             
 
