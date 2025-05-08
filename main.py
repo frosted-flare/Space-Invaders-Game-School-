@@ -1,8 +1,7 @@
 ## Python Modules And Imports ##
 
 import pygame, sys
-from spaceship import Spaceship
-from laser import Laser
+from game import Game
 
 ## Initialize  Modules
 
@@ -24,12 +23,9 @@ pygame.display.set_caption("Python Space Invaders")
 
 clock = pygame.time.Clock()
 
-## Spcaeship ##
+## Game  ##
 
-spaceship = Spaceship(SCREEN_WIDTH,SCREEN_HEIGHT)
-spaceship_group = pygame.sprite.GroupSingle()
-spaceship_group.add(spaceship)
-
+game = Game(SCREEN_WIDTH,SCREEN_HEIGHT)
 
 
 def main():
@@ -41,18 +37,20 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                sys.exit()
-
-        ## Updating ##
-        
-        spaceship_group.update()
+                sys.exit()        
          
+        ## Updating ##
+
+        game.spaceship_group.update()
+
         ## Drawing ##
 
         screen.fill(BLUE)
-        spaceship_group.sprite.lasers_group.draw(screen)
-        spaceship_group.draw(screen)
+        game.spaceship_group.sprite.lasers_group.draw(screen)
+        game.spaceship_group.draw(screen)
 
+        for obstacle in game.obstacles:
+            obstacle.blocks_group.draw(screen)
 
         ## Update The Display ##
 
