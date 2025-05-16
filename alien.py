@@ -1,35 +1,36 @@
 import pygame
 import os
 
-class Laser(pygame.sprite.Sprite):
-    def __init__(self,position,speed,screen_height,path):
+class Alien(pygame.sprite.Sprite):
+
+    def __init__(self,type,speed, x, y): 
         super().__init__()
-        
-        self.path = path
+        self.type = type
+
+        self.path = f"Sprites/Enemy_{type}_Sprites/"
 
         self.sprite_names = os.listdir(self.path) # Not images
         self.sprites = []
 
         
         for image in self.sprite_names:
-            image = pygame.image.load(f"{path}{image}")
+            image = pygame.image.load(f"Sprites/Enemy_{type}_Sprites/{image}")
             self.sprites.append(image)
-
-
+        
         self.image = self.sprites[0]
         self.current_image_index = 0
-        self.rect = self.image.get_rect(center = position)
-        self.speed = speed
-        self.screen_height = screen_height
+        self.rect = self.image.get_rect(topleft = (x,y))
 
-        self.ANIMATION_SPEED = 200
+        self.ANIMATION_SPEED = speed
         self.last_update = 0
 
-    def update(self):
-        self.rect.y -= self.speed
-        if self.rect.y > self.screen_height + 15 or self.rect.y < 0:
-            self.kill()
+    def update(self,direction):
 
+        ## Movement ##
+        self.rect.x += direction
+
+        ## Animation ##
+        
         if pygame.time.get_ticks() - self.last_update > self.ANIMATION_SPEED: # This if statment makes sure the sprite does not update every frame
             self.last_update = pygame.time.get_ticks()
 
