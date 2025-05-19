@@ -4,6 +4,7 @@ from obstacle import Obstacle
 from obstacle import grid
 from alien import Alien
 from laser import Laser
+from alien import MysteryShip
 
 class Game:
 
@@ -17,6 +18,7 @@ class Game:
         self.create_aliens()
         self.aliens_direction = 1
         self.aliens_lasers_group = pygame.sprite.Group()
+        self.mystery_ship_group = pygame.sprite.GroupSingle()
 
     def create_obstacles(self):
         obstacle_width = len(grid[0]) * 2
@@ -45,7 +47,7 @@ class Game:
 
                 else:
                     alien_type = 1
-                    speed = 200
+                    speed = 500
 
 
 
@@ -78,4 +80,5 @@ class Game:
             laser_sprite = Laser(random_alien.rect.center, -6,self.screen_height,f"Sprites/Enemy_Bullet_Sprites/")
             self.aliens_lasers_group.add(laser_sprite)
         
-    
+    def create_mystery_ship(self):
+        self.mystery_ship_group.add(MysteryShip(self.screen_width))

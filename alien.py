@@ -1,5 +1,6 @@
 import pygame
 import os
+import random
 
 class Alien(pygame.sprite.Sprite):
 
@@ -11,11 +12,13 @@ class Alien(pygame.sprite.Sprite):
 
         self.sprite_names = os.listdir(self.path) # Not images
         self.sprites = []
-
         
+        counter = 1
         for image in self.sprite_names:
-            image = pygame.image.load(f"Sprites/Enemy_{type}_Sprites/{image}")
+            image = pygame.image.load(f"Sprites/Enemy_{type}_Sprites/Enemy{counter}.png")
             self.sprites.append(image)
+            counter += 1
+
         
         self.image = self.sprites[0]
         self.current_image_index = 0
@@ -27,6 +30,7 @@ class Alien(pygame.sprite.Sprite):
     def update(self,direction):
 
         ## Movement ##
+
         self.rect.x += direction
 
         ## Animation ##
@@ -42,3 +46,36 @@ class Alien(pygame.sprite.Sprite):
                 self.image = self.sprites[0]
                 self.current_image_index = 1
 
+
+class MysteryShip(pygame.sprite.Sprite):
+    def __init__(self,screen_width):
+        super().__init__()
+
+        self.direction = random.choice([0,1])
+
+        self.screen_width = screen_width
+
+        if self.direction == 0:
+            self.image = pygame.image.load(f"Sprites/Mystery_Ship_Sprites/MysteryShipRight.png")
+        else:
+            self.image = pygame.image.load(f"Sprites/Mystery_Ship_Sprites/MysteryShipLeft.png")
+
+        if self.direction == 0:
+            x = 0
+        else:
+            x = self.screen_width - self.image.get_width()
+
+        if x == 0:
+            self.speed = 1
+        else:
+            self.speed = -1  
+
+        self.rect = self.image.get_rect(topleft = (x,40))
+
+    def update(self):
+
+        self.rect.x += self.speed
+        if self.rect.right > self.screen_width:
+            self.kill()
+        elif self.rect.left < 0:
+            self.kill()

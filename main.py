@@ -1,6 +1,6 @@
 ## Python Modules And Imports ##
 
-import pygame, sys
+import pygame, sys, random 
 from game import Game
 
 ## Initialize  Modules
@@ -33,6 +33,8 @@ game = Game(SCREEN_WIDTH,SCREEN_HEIGHT)
 SHOOT_LASER = pygame.USEREVENT
 pygame.time.set_timer(SHOOT_LASER,1000)
 
+MYSTERYSHIP = pygame.USEREVENT + 1
+pygame.time.set_timer(MYSTERYSHIP,random.randint(10000,15000))
 
 def main():
     
@@ -47,12 +49,18 @@ def main():
 
             if event.type == SHOOT_LASER:
                 game.alien_shoot_laser()
+            
+            if event.type == MYSTERYSHIP:
+
+                game.create_mystery_ship()
+                pygame.time.set_timer(MYSTERYSHIP, random.randint(10000,15000))
          
         ## Updating ##
 
         game.spaceship_group.update()
         game.move_aliens()
         game.aliens_lasers_group.update()
+        game.mystery_ship_group.update()
 
         ## Drawing ##
 
@@ -65,6 +73,7 @@ def main():
 
         game.aliens_group.draw(screen)
         game.aliens_lasers_group.draw(screen)
+        game.mystery_ship_group.draw(screen)
 
         ## Update The Display ##
 
