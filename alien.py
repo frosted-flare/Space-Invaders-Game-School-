@@ -68,9 +68,9 @@ class MysteryShip(pygame.sprite.Sprite):
         if x == 0:
             self.speed = 1
         else:
-            self.speed = -1  
+            self.speed = -1
 
-        self.rect = self.image.get_rect(topleft = (x,40))
+        self.rect = self.image.get_rect(topleft = (x,20))
 
     def update(self):
 

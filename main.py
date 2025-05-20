@@ -61,18 +61,19 @@ def main():
         game.move_aliens()
         game.aliens_lasers_group.update()
         game.mystery_ship_group.update()
+        game.check_for_collisions()
 
         ## Drawing ##
 
         screen.fill(WHITE)
         game.spaceship_group.sprite.lasers_group.draw(screen)
+        game.aliens_lasers_group.draw(screen)
         game.spaceship_group.draw(screen)
 
         for obstacle in game.obstacles:
             obstacle.blocks_group.draw(screen)
 
         game.aliens_group.draw(screen)
-        game.aliens_lasers_group.draw(screen)
         game.mystery_ship_group.draw(screen)
 
         ## Update The Display ##

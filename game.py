@@ -33,9 +33,9 @@ class Game:
     
     def create_aliens(self):
         for row in range(5): 
-            for column in range(11): 
+            for column in range(10): 
 
-                x = 0 + column * 37
+                x = 0 + column * 40
                 y = 0 + row * 35
                 speed = 0
                 if row == 0:
@@ -82,3 +82,52 @@ class Game:
         
     def create_mystery_ship(self):
         self.mystery_ship_group.add(MysteryShip(self.screen_width))
+
+    def check_for_collisions(self):
+
+        ## Spaceship ##
+
+        if self.spaceship_group.sprite.lasers_group: # For player lasers
+            for laser_sprite in self.spaceship_group.sprite.lasers_group:
+                if pygame.sprite.spritecollide(laser_sprite, self.aliens_group, True):
+                    laser_sprite.kill()
+                if pygame.sprite.spritecollide(laser_sprite, self.mystery_ship_group, True):
+                    laser_sprite.kill()
+
+                for obstacle in self.obstacles:
+                    if pygame.sprite.spritecollide(laser_sprite,obstacle.blocks_group,True):
+                        laser_sprite.kill()
+        
+        ## Aliens ##
+
+        if self.aliens_lasers_group: # For alien lasers
+                    
+            for alien_laser_sprite in self.aliens_lasers_group: 
+
+                if pygame.sprite.spritecollide(alien_laser_sprite,self.spaceship_group, False): # Checks for the player
+                    alien_laser_sprite.kill()
+                    print("YOU ARE DEAD!")
+
+                for obstacle in self.obstacles:
+
+                    if pygame.sprite.spritecollide(alien_laser_sprite,obstacle.blocks_group,False):
+                        
+                        alien_laser_sprite.rect.y += 10 # Moves the laser down a bit so the hole is deeper
+
+                        for pixel in obstacle.blocks_group:
+
+                            ## Now get rid of obstacle parts in a small area otherwise only one pixel will be destroyed ##
+
+                            pygame.sprite.spritecollide(alien_laser_sprite,obstacle.blocks_group,True) ## Gets rid of all pixels in the obstacle touching the laser
+
+
+                        alien_laser_sprite.kill()
+
+
+        if self.aliens_group:
+            for alien in self.aliens_group:
+                for obstacle in self.obstacles:
+                    pygame.sprite.spritecollide(alien, obstacle.blocks_group, True)
+
+            if pygame.sprite.spritecollide(alien,self.spaceship_group, False): # Checks for the player
+                    print("YOU ARE DEAD!")
