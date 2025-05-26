@@ -31,7 +31,7 @@ class Game:
         pygame.mixer.music.play(-1)
         self.orignal_alien_group_length = len(self.aliens_group)
 
-        self.ALIEN_SPEED = 1000
+        self.ALIEN_SPEED = 1000 
         self.alien_move_distance = 10
 
     def create_obstacles(self):
@@ -50,7 +50,7 @@ class Game:
             for column in range(10): 
 
                 x = 25 + column * 40
-                y = 25 + row * 40
+                y = 35 + row * 40
                 speed = 0
                 if row == 0:
                     alien_type = 3
