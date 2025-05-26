@@ -35,6 +35,7 @@ class Spaceship(pygame.sprite.Sprite):
         self.non_linear_animation_speed = self.ANIMATION_SPEED
         self.current_image_index = 0
         self.last_update = 0
+        self.laser_sound = pygame.mixer.Sound("Sounds/laser.ogg")
 
 
 
@@ -50,6 +51,7 @@ class Spaceship(pygame.sprite.Sprite):
         if keys[pygame.K_SPACE] and self.laser_ready:
             self.laser_ready = False
             self.laser_activated = True
+            self.laser_sound.play()
 
             
             
