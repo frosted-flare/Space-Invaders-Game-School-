@@ -25,6 +25,8 @@ NAVY_BLUE = (0, 0, 128)
 font = pygame.font.Font("Fonts/ElectronPulse-9Yn42.ttf", 20)
 level_surface = font.render("LEVEL 01", False, BLUE)
 game_over_surface = font.render("GAME OVER", False, BLUE)
+score_text_surface = font.render("SCORE:", False, BLUE)
+highscore_text_surface = font.render("HIGH-SCORE:", False, BLUE)
 
 ## Display ##
 
@@ -92,6 +94,17 @@ def main():
         for life in range(game.lives):
             screen.blit(pygame.image.load(f"Sprites/Heart_Sprites/Heart.png"),(x,493))
             x += 50
+
+        screen.blit(score_text_surface,(15,10,50,50))
+        formated_score = str(game.score).zfill(5)
+        score_surface = font.render(str(formated_score), False, BLUE)
+        screen.blit(score_surface,(100,10,50,50))
+        screen.blit(highscore_text_surface, (250,10,50,50))
+        formated_highscore = str(game.high_score).zfill(5)
+        high_score_surface = font.render(str(formated_highscore), False, BLUE)
+        screen.blit(high_score_surface,(380,10,50,50))
+
+
 
         game.spaceship_group.sprite.lasers_group.draw(screen)
         game.aliens_lasers_group.draw(screen)

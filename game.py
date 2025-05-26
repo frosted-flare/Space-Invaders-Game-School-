@@ -23,6 +23,10 @@ class Game:
         self.mystery_ship_group = pygame.sprite.GroupSingle()
         self.lives = 3
         self.run = True
+        self.score = 0
+        self.high_score = 0
+        self.load_highscore()
+        
 
     def create_obstacles(self):
         obstacle_width = len(grid[0]) * 2
@@ -66,11 +70,11 @@ class Game:
         for alien in alien_sprites:
             if alien.rect.right >= self.screen_width + self.offset/2:
                 self.aliens_direction = -1
-                self.alien_move_down(2)
+                self.alien_move_down(1)
                 
             elif alien.rect.left <= self.offset/2:
                 self.aliens_direction = 1
-                self.alien_move_down(2)
+                self.alien_move_down(1)
 
 
     def alien_move_down(self,distance):
@@ -93,9 +97,16 @@ class Game:
 
         if self.spaceship_group.sprite.lasers_group: # For player lasers
             for laser_sprite in self.spaceship_group.sprite.lasers_group:
-                if pygame.sprite.spritecollide(laser_sprite, self.aliens_group, True):
-                    laser_sprite.kill()
+                aliens_hit = pygame.sprite.spritecollide(laser_sprite, self.aliens_group, True)
+                if aliens_hit:
+                    for alien in aliens_hit:
+                        self.score += alien.type * 100
+                        self.check_for_highscore()
+                        laser_sprite.kill()
+
                 if pygame.sprite.spritecollide(laser_sprite, self.mystery_ship_group, True):
+                    self.score += 500
+                    self.check_for_highscore()
                     laser_sprite.kill()
 
                 for obstacle in self.obstacles:
@@ -150,3 +161,18 @@ class Game:
         self.create_aliens()
         self.mystery_ship_group.empty()
         self.obstacles = self.create_obstacles()
+        self.score = 0
+
+    def check_for_highscore(self):
+        if self.score > self.high_score:
+            self.high_score = self.score
+
+        with open("highscore.txt", "w") as file:
+            file.write(str(self.high_score))
+
+    def load_highscore(self):
+        try:
+            with open("highscore.txt", "r") as file:
+                self.high_score = int(file.read())
+        except FileNotFoundError:
+            self.high_score = 0

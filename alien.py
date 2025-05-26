@@ -26,12 +26,13 @@ class Alien(pygame.sprite.Sprite):
 
         self.ANIMATION_SPEED = speed
         self.last_update = 0
+        
 
     def update(self,direction):
 
         ## Movement ##
-
-        self.rect.x += direction
+ 
+        self.rect.x += direction  
 
         ## Animation ##
         
