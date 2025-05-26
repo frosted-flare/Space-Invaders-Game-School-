@@ -1,7 +1,6 @@
 import pygame
 import os
 import random
-
 class Alien(pygame.sprite.Sprite):
 
     def __init__(self,type,speed, x, y): 
@@ -26,13 +25,18 @@ class Alien(pygame.sprite.Sprite):
 
         self.ANIMATION_SPEED = speed
         self.last_update = 0
+        self.last_move = 0
+
         
 
-    def update(self,direction):
+
+    def update(self,direction,contact,ALIEN_SPEED,move_distance):
 
         ## Movement ##
- 
-        self.rect.x += direction  
+
+        if pygame.time.get_ticks() - self.last_move > ALIEN_SPEED or contact: # Contact esures that the sprite still moves of the wall
+            self.last_move = pygame.time.get_ticks()
+            self.rect.x += direction * move_distance
 
         ## Animation ##
         

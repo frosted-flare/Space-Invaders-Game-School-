@@ -29,7 +29,10 @@ class Game:
         self.load_highscore()
         pygame.mixer.music.load("Sounds/music.ogg")
         pygame.mixer.music.play(-1)
-        
+        self.orignal_alien_group_length = len(self.aliens_group)
+
+        self.ALIEN_SPEED = 1000
+        self.alien_move_distance = 10
 
     def create_obstacles(self):
         obstacle_width = len(grid[0]) * 2
@@ -66,18 +69,24 @@ class Game:
                 self.aliens_group.add(alien)
 
     def move_aliens(self):
-        self.aliens_group.update(self.aliens_direction)
+
+        contact = False
 
         alien_sprites = self.aliens_group.sprites()
         
         for alien in alien_sprites:
             if alien.rect.right >= self.screen_width + self.offset/2:
                 self.aliens_direction = -1
-                self.alien_move_down(1)
+                self.alien_move_down(5)
+                contact = True
+
                 
             elif alien.rect.left <= self.offset/2:
                 self.aliens_direction = 1
-                self.alien_move_down(1)
+                self.alien_move_down(5)
+                contact = True
+
+        self.aliens_group.update(self.aliens_direction,contact,self.ALIEN_SPEED,self.alien_move_distance)
 
 
     def alien_move_down(self,distance):
