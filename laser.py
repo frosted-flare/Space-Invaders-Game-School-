@@ -6,14 +6,11 @@ class Laser(pygame.sprite.Sprite):
         super().__init__()
         
         self.path = path
-
-        self.sprite_names = os.listdir(self.path) # Not images
         self.sprites = []
 
         
-        for image in self.sprite_names:
-            image = pygame.image.load(f"{path}{image}")
-            self.sprites.append(image)
+        image = pygame.image.load(path)
+        self.sprites.append(image)
 
 
         self.image = self.sprites[0]

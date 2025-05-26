@@ -97,7 +97,7 @@ class Game:
     def alien_shoot_laser(self):
         if self.aliens_group.sprites():
             random_alien = random.choice(self.aliens_group.sprites())
-            laser_sprite = Laser(random_alien.rect.center, -6,self.screen_height,f"Sprites/Enemy_Bullet_Sprites/")
+            laser_sprite = Laser(random_alien.rect.center, -6,self.screen_height,f"Sprites/Bullet_Sprites/Enemy_Bullet_{random_alien.type}.png")
             self.aliens_lasers_group.add(laser_sprite)
         
     def create_mystery_ship(self):
