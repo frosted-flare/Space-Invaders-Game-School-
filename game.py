@@ -97,7 +97,7 @@ class Game:
     def alien_shoot_laser(self):
         if self.aliens_group.sprites():
             random_alien = random.choice(self.aliens_group.sprites())
-            laser_sprite = Laser(random_alien.rect.center, -6,self.screen_height,f"Sprites/Bullet_Sprites/Enemy_Bullet_{random_alien.type}.png")
+            laser_sprite = Laser(random_alien.rect.center, -6,self.screen_height,f"Sprites/Bullet_Sprites/Enemy_Bullet_{random_alien.type}.png",random_alien.type,self.spaceship_group.sprite)
             self.aliens_lasers_group.add(laser_sprite)
         
     def create_mystery_ship(self):
@@ -133,26 +133,29 @@ class Game:
                     
             for alien_laser_sprite in self.aliens_lasers_group: 
 
+                
                 if pygame.sprite.spritecollide(alien_laser_sprite,self.spaceship_group, False): # Checks for the player
                     alien_laser_sprite.kill()
                     self.lives -= 1
                     if self.lives == 0:
                         self.game_over()
+                
+                if alien_laser_sprite.type != 3:
 
-                for obstacle in self.obstacles:
+                    for obstacle in self.obstacles:
+                            
+                        if pygame.sprite.spritecollide(alien_laser_sprite,obstacle.blocks_group,False):
+                            
+                            alien_laser_sprite.rect.y += 10 # Moves the laser down a bit so the hole is deeper
 
-                    if pygame.sprite.spritecollide(alien_laser_sprite,obstacle.blocks_group,False):
-                        
-                        alien_laser_sprite.rect.y += 10 # Moves the laser down a bit so the hole is deeper
+                            for pixel in obstacle.blocks_group:
 
-                        for pixel in obstacle.blocks_group:
+                                ## Now get rid of obstacle parts in a small area otherwise only one pixel will be destroyed ##
 
-                            ## Now get rid of obstacle parts in a small area otherwise only one pixel will be destroyed ##
-
-                            pygame.sprite.spritecollide(alien_laser_sprite,obstacle.blocks_group,True) ## Gets rid of all pixels in the obstacle touching the laser
+                                pygame.sprite.spritecollide(alien_laser_sprite,obstacle.blocks_group,True) ## Gets rid of all pixels in the obstacle touching the laser
 
 
-                        alien_laser_sprite.kill()
+                            alien_laser_sprite.kill()
 
 
         if self.aliens_group:

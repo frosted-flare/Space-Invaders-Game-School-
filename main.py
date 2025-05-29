@@ -42,7 +42,7 @@ clock = pygame.time.Clock()
 game = Game(SCREEN_WIDTH,SCREEN_HEIGHT,OFFSET)
 
 SHOOT_LASER = pygame.USEREVENT
-pygame.time.set_timer(SHOOT_LASER,1000)
+pygame.time.set_timer(SHOOT_LASER,2000)
 
 MYSTERYSHIP = pygame.USEREVENT + 1
 pygame.time.set_timer(MYSTERYSHIP,random.randint(10000,15000))

@@ -56,7 +56,7 @@ class Spaceship(pygame.sprite.Sprite):
             
             
     def fire_laser(self):
-        laser = Laser((self.rect.centerx,self.rect.centery),5,self.screen_height,f"Sprites/Bullet_Sprites/Bullet1.png")
+        laser = Laser((self.rect.centerx,self.rect.centery),5,self.screen_height,f"Sprites/Bullet_Sprites/Bullet1.png",0,self)
         self.lasers_group.add(laser)
         self.laser_time = pygame.time.get_ticks()
 
