@@ -5,6 +5,7 @@ from obstacle import grid
 from alien import Alien
 from laser import Laser
 from alien import MysteryShip
+from explosion import Explosion
 
 class Game:
 
@@ -17,6 +18,7 @@ class Game:
         self.spaceship_group.add(Spaceship(self.screen_width,self.screen_height,self.offset))
         self.obstacles = self.create_obstacles()
         self.aliens_group = pygame.sprite.Group()
+        self.explosions_group = pygame.sprite.Group()
         self.create_aliens()
         self.aliens_direction = 1
         self.aliens_lasers_group = pygame.sprite.Group()
@@ -27,7 +29,7 @@ class Game:
         self.high_score = 0
         self.explosion_sound = pygame.mixer.Sound("Sounds/explosion.ogg")
         self.load_highscore()
-        pygame.mixer.music.load("Sounds/music.ogg")
+        pygame.mixer.music.load("Sounds/music2.mp3")
         pygame.mixer.music.play(-1)
         self.orignal_alien_group_length = len(self.aliens_group)
 
@@ -116,6 +118,7 @@ class Game:
                         self.score += alien.type * 100
                         self.check_for_highscore()
                         laser_sprite.kill()
+                        self.explosions_group.add(Explosion((alien.rect.centerx,alien.rect.centery)))
 
                 if pygame.sprite.spritecollide(laser_sprite, self.mystery_ship_group, True):
                     self.score += 500

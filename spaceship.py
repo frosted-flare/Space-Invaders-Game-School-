@@ -51,7 +51,6 @@ class Spaceship(pygame.sprite.Sprite):
         if keys[pygame.K_SPACE] and self.laser_ready:
             self.laser_ready = False
             self.laser_activated = True
-            self.laser_sound.play()
 
             
             
@@ -59,6 +58,8 @@ class Spaceship(pygame.sprite.Sprite):
         laser = Laser((self.rect.centerx,self.rect.centery),5,self.screen_height,f"Sprites/Bullet_Sprites/Bullet1.png",0,self)
         self.lasers_group.add(laser)
         self.laser_time = pygame.time.get_ticks()
+        self.laser_sound.play()
+
 
     
     def update(self):

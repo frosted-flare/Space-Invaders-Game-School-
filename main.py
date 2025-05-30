@@ -76,6 +76,7 @@ def main():
             game.move_aliens()
             game.aliens_lasers_group.update()
             game.mystery_ship_group.update()
+            game.explosions_group.update()
             game.check_for_collisions()
 
         ## Drawing ##
@@ -115,6 +116,8 @@ def main():
 
         game.aliens_group.draw(screen)
         game.mystery_ship_group.draw(screen)
+        game.explosions_group.draw(screen)
+
 
         ## Update The Display ##
 
