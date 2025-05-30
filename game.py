@@ -1,7 +1,7 @@
 import pygame,random
 from spaceship import Spaceship
 from obstacle import Obstacle
-from obstacle import grid
+from obstacle import grids
 from alien import Alien
 from laser import Laser
 from alien import MysteryShip
@@ -37,13 +37,13 @@ class Game:
         self.alien_move_distance = 10
 
     def create_obstacles(self):
-        obstacle_width = len(grid[0]) * 2
+        obstacle_width = len(grids[0]) * 2
 
         gap = (self.screen_width + self.offset*3 - (3 * obstacle_width))/5
         obstacles = []
         for i in range(3):
-            offset_x = (i + 1) * gap + i * obstacle_width
-            obstacle = Obstacle(offset_x, self.screen_height - 130)
+            offset_x = (i + 1) * gap + i * obstacle_width - 10
+            obstacle = Obstacle(offset_x, self.screen_height - 130,str(i))
             obstacles.append(obstacle)
         return obstacles
     
