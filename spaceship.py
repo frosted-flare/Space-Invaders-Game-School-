@@ -5,7 +5,7 @@ from laser import Laser
 
 class Spaceship(pygame.sprite.Sprite):
 
-    def __init__(self, screen_width, screen_height,offset ):
+    def __init__(self, screen_width, screen_height,offset, game):
         super().__init__()
         
         self.offset = offset
@@ -31,11 +31,12 @@ class Spaceship(pygame.sprite.Sprite):
         self.laser_activated = False
         self.laser_time = 0
         self.laser_delay = 300
-        self.ANIMATION_SPEED = 200
-        self.non_linear_animation_speed = self.ANIMATION_SPEED
+        self.animation_speed = 200
+        self.non_linear_animation_speed = self.animation_speed
         self.current_image_index = 0
         self.last_update = 0
         self.laser_sound = pygame.mixer.Sound("Sounds/laser.ogg")
+        self.game = game
 
 
 
@@ -69,10 +70,17 @@ class Spaceship(pygame.sprite.Sprite):
 
             
     def fire_laser(self):
-        laser = Laser((self.rect.centerx,self.rect.centery),5,self.screen_height,f"Sprites/Bullet_Sprites/Bullet1.png",0,self)
+        if self.game.powerup == 4:
+            laser = Laser((self.rect.centerx,self.rect.centery),5,self.screen_height,f"Sprites/Bullet_Sprites/Bullet2.png",0,self)
+        elif self.game.powerup == 3:
+            laser = Laser((self.rect.centerx,self.rect.centery),5,self.screen_height,f"Sprites/Bullet_Sprites/Bullet3.png",0,self)
+        else:
+            laser = Laser((self.rect.centerx,self.rect.centery),5,self.screen_height,f"Sprites/Bullet_Sprites/Bullet1.png",0,self)
         self.lasers_group.add(laser)
         self.laser_time = pygame.time.get_ticks()
         self.laser_sound.play()
+
+
 
 
     
@@ -81,6 +89,11 @@ class Spaceship(pygame.sprite.Sprite):
         self.constrain_movement()
         self.lasers_group.update()
         self.recharge_laser()
+
+        if self.game.powerup == 3:
+            self.animation_speed = 50
+        else:
+            self.animation_speed = 200
 
         if pygame.time.get_ticks() - self.last_update > self.non_linear_animation_speed: # This if statment makes sure the sprite does not update every frame
             
@@ -98,8 +111,13 @@ class Spaceship(pygame.sprite.Sprite):
                 ## Fire the Laser ##
 
                 self.fire_laser()
+                if self.game.powerup == 4:
+                    self.fire_laser()
+                    self.fire_laser()
+                    self.fire_laser()
 
-                self.non_linear_animation_speed = self.ANIMATION_SPEED
+
+                self.non_linear_animation_speed = self.animation_speed
 
                 self.image = self.sprites[0]
                 self.current_image_index = 1

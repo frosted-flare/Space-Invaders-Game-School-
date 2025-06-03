@@ -17,7 +17,7 @@ class Game:
         self.screen_height = screen_height
         self.offset = offset
         self.spaceship_group = pygame.sprite.GroupSingle()
-        self.spaceship_group.add(Spaceship(self.screen_width,self.screen_height,self.offset))
+        self.spaceship_group.add(Spaceship(self.screen_width,self.screen_height,self.offset,self))
         self.obstacles = self.create_obstacles()
         self.aliens_group = pygame.sprite.Group()
         self.shields_group = pygame.sprite.Group()
@@ -124,6 +124,7 @@ class Game:
                 aliens_hit = pygame.sprite.spritecollide(laser_sprite, self.aliens_group, False)
 
                 if pygame.sprite.spritecollide(laser_sprite, self.mystery_ship_group, False):
+                    self.powerup_group.add(Powerup((self.mystery_ship_group.sprite.rect.centerx,self.mystery_ship_group.sprite.rect.centery),2))
                     self.score += 500
                     self.explosion_sound.play()
                     self.check_for_highscore()
@@ -135,7 +136,7 @@ class Game:
                     self.explosion_sound.play()
                     for alien in aliens_hit:
                         if alien.contains_powerup == True:
-                            self.powerup_group.add(Powerup((alien.rect.centerx,alien.rect.centery)))
+                            self.powerup_group.add(Powerup((alien.rect.centerx,alien.rect.centery),1))
                         
                         self.score += alien.type * 100
                         self.check_for_highscore()
@@ -148,9 +149,9 @@ class Game:
                 
 
                 for obstacle in self.obstacles:
-                    if pygame.sprite.spritecollide(laser_sprite,obstacle.blocks_group,True):
+                    if pygame.sprite.spritecollide(laser_sprite,obstacle.blocks_group,True) :
                         laser_sprite.kill()
-        
+            
         ## Aliens ##
         
         if self.aliens_lasers_group: # For alien lasers
@@ -183,7 +184,7 @@ class Game:
                         self.explosion_sound.play()
                         for alien in aliens_hit:
                             if alien.contains_powerup == True:
-                                self.powerup_group.add(Powerup((alien.rect.centerx,alien.rect.centery)))
+                                self.powerup_group.add(Powerup((alien.rect.centerx,alien.rect.centery),1))
                         
                             self.score += alien.type * 100
                             self.check_for_highscore()
@@ -222,6 +223,7 @@ class Game:
         if self.powerup_group:
             for powerup in self.powerup_group:
                 if pygame.sprite.spritecollide(powerup,self.spaceship_group, False): # Checks for the player
+                    self.clear_powerups()
                     self.powerup_sound.play(2)
                     self.powerup = powerup.type
                     powerup.kill()
@@ -230,18 +232,25 @@ class Game:
                     elif self.powerup == 2:
                         for obstacle in self.obstacles:
                             self.shields_group.add(Shield(False,obstacle.position,2))
+                    elif self.powerup == 3:
+                        self.shields_group.add(Shield(self.spaceship_group.sprite,False,3))
+                    elif self.powerup == 4:
+                        self.shields_group.add(Shield(self.spaceship_group.sprite,False,4))
 
                     self.powerup_start_time = pygame.time.get_ticks() 
 
+    def clear_powerups(self):
+        for shield in self.shields_group:
+                shield.kill()
+
+        self.powerup = False
+        self.powerup_start_time = 0
+        self.spaceship_group.sprite.update_sprites(f"Sprites/Player_Sprites/")
+            
     def check_for_powerups(self):
         if self.powerup != False:
             if pygame.time.get_ticks() - self.powerup_start_time > 10000:
-                for shield in self.shields_group:
-                    shield.kill()
-
-                self.powerup = False
-                self.powerup_start_time = 0
-                self.spaceship_group.sprite.update_sprites(f"Sprites/Player_Sprites/")
+                self.clear_powerups()
                 
 
     def game_over(self):
