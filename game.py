@@ -40,7 +40,7 @@ class Game:
         self.powerup = False
         self.powerup_text = "sudo -su"
 
-        self.ALIEN_SPEED = 1000 
+        self.Alien_speed = 1000 
         self.alien_move_distance = 10
         self.powerup_start_time = 0 
 
@@ -96,7 +96,7 @@ class Game:
                 self.alien_move_down(5)
                 contact = True
 
-        self.aliens_group.update(self.aliens_direction,contact,self.ALIEN_SPEED,self.alien_move_distance)
+        self.aliens_group.update(self.aliens_direction,contact,self.Alien_speed,self.alien_move_distance)
 
 
     def alien_move_down(self,distance):
@@ -124,7 +124,6 @@ class Game:
                 aliens_hit = pygame.sprite.spritecollide(laser_sprite, self.aliens_group, False)
 
                 if pygame.sprite.spritecollide(laser_sprite, self.mystery_ship_group, False):
-                    self.powerup_group.add(Powerup((self.mystery_ship_group.sprite.rect.centerx,self.mystery_ship_group.sprite.rect.centery)))
                     self.score += 500
                     self.explosion_sound.play()
                     self.check_for_highscore()
@@ -135,11 +134,15 @@ class Game:
                 if aliens_hit:
                     self.explosion_sound.play()
                     for alien in aliens_hit:
+                        if alien.contains_powerup == True:
+                            self.powerup_group.add(Powerup((alien.rect.centerx,alien.rect.centery)))
+                        
                         self.score += alien.type * 100
                         self.check_for_highscore()
                         laser_sprite.kill()
                         self.explosions_group.add(Explosion((alien.rect.centerx,alien.rect.centery)))
                         alien.kill()
+                        self.Alien_speed -= 15
 
 
                 
@@ -179,6 +182,9 @@ class Game:
                     if aliens_hit:
                         self.explosion_sound.play()
                         for alien in aliens_hit:
+                            if alien.contains_powerup == True:
+                                self.powerup_group.add(Powerup((alien.rect.centerx,alien.rect.centery)))
+                        
                             self.score += alien.type * 100
                             self.check_for_highscore()
                             alien_laser_sprite.kill()
@@ -251,6 +257,7 @@ class Game:
         self.mystery_ship_group.empty()
         self.obstacles = self.create_obstacles()
         self.score = 0
+        self.Alien_speed = 1000
 
     def check_for_highscore(self):
         if self.score > self.high_score:

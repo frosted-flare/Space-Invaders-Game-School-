@@ -27,7 +27,6 @@ level_surface = font.render("LEVEL 01", False, BLUE)
 game_over_surface = font.render("GAME OVER", False, BLUE)
 score_text_surface = font.render("SCORE:", False, BLUE)
 highscore_text_surface = font.render("HIGH-SCORE:", False, BLUE)
-powerup_text_surface = font.render("", False, BLUE)
 
 ## Display ##
 
