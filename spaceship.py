@@ -53,6 +53,20 @@ class Spaceship(pygame.sprite.Sprite):
             self.laser_activated = True
 
             
+    def update_sprites(self,path):
+        self.path = path
+
+        self.sprite_names = os.listdir(self.path) # Not images
+        self.sprites = []
+
+        counter = 1
+        for image in self.sprite_names:
+            image = pygame.image.load(path+f"Player{counter}.png")
+            self.sprites.append(image)
+            counter += 1
+
+            self.image = pygame.image.load(path+"Player1.png")
+
             
     def fire_laser(self):
         laser = Laser((self.rect.centerx,self.rect.centery),5,self.screen_height,f"Sprites/Bullet_Sprites/Bullet1.png",0,self)

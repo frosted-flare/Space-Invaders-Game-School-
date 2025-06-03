@@ -20,6 +20,8 @@ class Laser(pygame.sprite.Sprite):
         self.screen_height = screen_height
         self.type = type
         self.spaceship = spaceship
+        self.bounced = False
+        self.flipped = False
 
     def update(self):
 
@@ -38,5 +40,9 @@ class Laser(pygame.sprite.Sprite):
        
         if self.rect.y > self.screen_height + 15 or self.rect.y < 0:
             self.kill()
+        
+        if self.flipped == True:
+            self.flipped = False
+            self.image = pygame.transform.flip(self.image,False,True)
 
 

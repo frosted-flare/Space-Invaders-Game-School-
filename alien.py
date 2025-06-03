@@ -68,7 +68,7 @@ class MysteryShip(pygame.sprite.Sprite):
         if self.direction == 0:
             x = self.offset/2
         else:
-            x = self.screen_width + self.offset - self.image.get_width()
+            x = self.screen_width - self.image.get_width()
 
         if x == self.offset/2:
             self.speed = 1
@@ -80,7 +80,7 @@ class MysteryShip(pygame.sprite.Sprite):
     def update(self):
 
         self.rect.x += self.speed
-        if self.rect.right > self.screen_width + self.offset/2:
+        if self.rect.right > self.screen_width + self.offset/2 + 80:
             self.kill()
-        elif self.rect.left < self.offset/2:
+        elif self.rect.left < self.offset/2 - 80:
             self.kill()

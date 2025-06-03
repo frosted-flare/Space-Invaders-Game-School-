@@ -6,6 +6,8 @@ from alien import Alien
 from laser import Laser
 from alien import MysteryShip
 from explosion import Explosion
+from powerup import Powerup
+from shield import Shield
 
 class Game:
 
@@ -18,7 +20,9 @@ class Game:
         self.spaceship_group.add(Spaceship(self.screen_width,self.screen_height,self.offset))
         self.obstacles = self.create_obstacles()
         self.aliens_group = pygame.sprite.Group()
+        self.shields_group = pygame.sprite.Group()
         self.explosions_group = pygame.sprite.Group()
+        self.powerup_group = pygame.sprite.Group()
         self.create_aliens()
         self.aliens_direction = 1
         self.aliens_lasers_group = pygame.sprite.Group()
@@ -27,14 +31,18 @@ class Game:
         self.run = True
         self.score = 0
         self.high_score = 0
-        self.explosion_sound = pygame.mixer.Sound("Sounds/explosion.ogg")
+        self.explosion_sound = pygame.mixer.Sound("Sounds/8-bit-bomb-explosion.wav")
+        self.powerup_sound = pygame.mixer.Sound("Sounds/8-bit-laser-151672.mp3")
         self.load_highscore()
         pygame.mixer.music.load("Sounds/music2.mp3")
         pygame.mixer.music.play(-1)
         self.orignal_alien_group_length = len(self.aliens_group)
+        self.powerup = False
+        self.powerup_text = "sudo -su"
 
         self.ALIEN_SPEED = 1000 
         self.alien_move_distance = 10
+        self.powerup_start_time = 0 
 
     def create_obstacles(self):
         obstacle_width = len(grids[0]) * 2
@@ -104,14 +112,26 @@ class Game:
         
     def create_mystery_ship(self):
         self.mystery_ship_group.add(MysteryShip(self.screen_width,self.offset/2))
+    
 
     def check_for_collisions(self):
 
         ## Spaceship ##
 
         if self.spaceship_group.sprite.lasers_group: # For player lasers
+
             for laser_sprite in self.spaceship_group.sprite.lasers_group:
-                aliens_hit = pygame.sprite.spritecollide(laser_sprite, self.aliens_group, True)
+                aliens_hit = pygame.sprite.spritecollide(laser_sprite, self.aliens_group, False)
+
+                if pygame.sprite.spritecollide(laser_sprite, self.mystery_ship_group, False):
+                    self.powerup_group.add(Powerup((self.mystery_ship_group.sprite.rect.centerx,self.mystery_ship_group.sprite.rect.centery)))
+                    self.score += 500
+                    self.explosion_sound.play()
+                    self.check_for_highscore()
+                    laser_sprite.kill()
+                    self.mystery_ship_group.sprite.kill()
+
+
                 if aliens_hit:
                     self.explosion_sound.play()
                     for alien in aliens_hit:
@@ -119,31 +139,54 @@ class Game:
                         self.check_for_highscore()
                         laser_sprite.kill()
                         self.explosions_group.add(Explosion((alien.rect.centerx,alien.rect.centery)))
+                        alien.kill()
 
-                if pygame.sprite.spritecollide(laser_sprite, self.mystery_ship_group, True):
-                    self.score += 500
-                    self.explosion_sound.play()
-                    self.check_for_highscore()
-                    laser_sprite.kill()
+
+                
 
                 for obstacle in self.obstacles:
                     if pygame.sprite.spritecollide(laser_sprite,obstacle.blocks_group,True):
                         laser_sprite.kill()
         
         ## Aliens ##
-
+        
         if self.aliens_lasers_group: # For alien lasers
                     
             for alien_laser_sprite in self.aliens_lasers_group: 
 
+                if pygame.sprite.spritecollide(alien_laser_sprite,self.shields_group,False): # Checks for shields
+                    alien_laser_sprite.rect.x -= 30
+                    alien_laser_sprite.speed =  alien_laser_sprite.speed * -1
+                    alien_laser_sprite.bounced = True
+                    alien_laser_sprite.flipped = True
+
+
                 
                 if pygame.sprite.spritecollide(alien_laser_sprite,self.spaceship_group, False): # Checks for the player
+                   
                     alien_laser_sprite.kill()
-                    self.lives -= 1
-                    if self.lives == 0:
-                        self.game_over()
-                
-                if alien_laser_sprite.type != 3:
+                    self.explosion_sound.play()
+                    self.explosions_group.add(Explosion((alien_laser_sprite.rect.centerx,alien_laser_sprite.rect.centery)))
+                    if self.powerup == False:
+                        self.lives -= 1
+                        if self.lives == 0:
+                            self.game_over()
+
+                if self.powerup != False and alien_laser_sprite.bounced == True:
+
+                    aliens_hit = pygame.sprite.spritecollide(alien_laser_sprite, self.aliens_group, False)
+
+                    if aliens_hit:
+                        self.explosion_sound.play()
+                        for alien in aliens_hit:
+                            self.score += alien.type * 100
+                            self.check_for_highscore()
+                            alien_laser_sprite.kill()
+                            self.explosions_group.add(Explosion((alien.rect.centerx,alien.rect.centery)))
+                            alien.kill()
+
+
+                if alien_laser_sprite.type != 3 and alien_laser_sprite.bounced == False:
 
                     for obstacle in self.obstacles:
                             
@@ -157,8 +200,9 @@ class Game:
 
                                 pygame.sprite.spritecollide(alien_laser_sprite,obstacle.blocks_group,True) ## Gets rid of all pixels in the obstacle touching the laser
 
-
+                            self.explosions_group.add(Explosion((alien_laser_sprite.rect.centerx,alien_laser_sprite.rect.centery)))
                             alien_laser_sprite.kill()
+                            self.explosion_sound.play()
 
 
         if self.aliens_group:
@@ -168,6 +212,31 @@ class Game:
 
                 if pygame.sprite.spritecollide(alien,self.spaceship_group, False): # Checks for the player
                     self.game_over()
+
+        if self.powerup_group:
+            for powerup in self.powerup_group:
+                if pygame.sprite.spritecollide(powerup,self.spaceship_group, False): # Checks for the player
+                    self.powerup_sound.play(2)
+                    self.powerup = powerup.type
+                    powerup.kill()
+                    if self.powerup == 1:
+                        self.shields_group.add(Shield(self.spaceship_group.sprite,False,1))
+                    elif self.powerup == 2:
+                        for obstacle in self.obstacles:
+                            self.shields_group.add(Shield(False,obstacle.position,2))
+
+                    self.powerup_start_time = pygame.time.get_ticks() 
+
+    def check_for_powerups(self):
+        if self.powerup != False:
+            if pygame.time.get_ticks() - self.powerup_start_time > 10000:
+                for shield in self.shields_group:
+                    shield.kill()
+
+                self.powerup = False
+                self.powerup_start_time = 0
+                self.spaceship_group.sprite.update_sprites(f"Sprites/Player_Sprites/")
+                
 
     def game_over(self):
         self.run = False

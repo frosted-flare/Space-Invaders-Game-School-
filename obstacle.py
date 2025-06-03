@@ -100,13 +100,16 @@ class Obstacle:
         gridtype = int(gridtype)
         
         self.blocks_group = pygame.sprite.Group()
+        
         for row in range(len(grids[gridtype])):
             for column in range(len(grids[gridtype][0])):
                 if grids[gridtype][row][column] == 1:
-                    pos_x = x +column * 4
+                    pos_x = x + column * 4
                     pos_y = y + row * 4
                     block = Block(pos_x,pos_y)
                     self.blocks_group.add(block)
                 else:
                     pass
+        
+        self.position = (x+25,y)
                                 

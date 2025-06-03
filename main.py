@@ -27,6 +27,7 @@ level_surface = font.render("LEVEL 01", False, BLUE)
 game_over_surface = font.render("GAME OVER", False, BLUE)
 score_text_surface = font.render("SCORE:", False, BLUE)
 highscore_text_surface = font.render("HIGH-SCORE:", False, BLUE)
+powerup_text_surface = font.render("", False, BLUE)
 
 ## Display ##
 
@@ -45,7 +46,7 @@ SHOOT_LASER = pygame.USEREVENT
 pygame.time.set_timer(SHOOT_LASER,2000)
 
 MYSTERYSHIP = pygame.USEREVENT + 1
-pygame.time.set_timer(MYSTERYSHIP,random.randint(10000,15000))
+pygame.time.set_timer(MYSTERYSHIP,random.randint(8000,13000))
 
 def main():
     
@@ -62,9 +63,8 @@ def main():
                 game.alien_shoot_laser()
             
             if event.type == MYSTERYSHIP and game.run:
-
                 game.create_mystery_ship()
-                pygame.time.set_timer(MYSTERYSHIP, random.randint(10000,15000))
+                pygame.time.set_timer(MYSTERYSHIP, random.randint(8000,13000))
             
             keys = pygame.key.get_pressed()
             if keys[pygame.K_SPACE] and game.run == False:
@@ -77,7 +77,10 @@ def main():
             game.aliens_lasers_group.update()
             game.mystery_ship_group.update()
             game.explosions_group.update()
+            game.powerup_group.update()
             game.check_for_collisions()
+            game.check_for_powerups()
+            game.shields_group.update()
 
         ## Drawing ##
         screen.fill(WHITE)
@@ -110,13 +113,16 @@ def main():
         game.spaceship_group.sprite.lasers_group.draw(screen)
         game.aliens_lasers_group.draw(screen)
         game.spaceship_group.draw(screen)
+        game.aliens_group.draw(screen)
+        game.mystery_ship_group.draw(screen)
+        game.explosions_group.draw(screen)
+        game.powerup_group.draw(screen)
+        game.shields_group.draw(screen)
 
         for obstacle in game.obstacles:
             obstacle.blocks_group.draw(screen)
 
-        game.aliens_group.draw(screen)
-        game.mystery_ship_group.draw(screen)
-        game.explosions_group.draw(screen)
+        
 
 
         ## Update The Display ##
