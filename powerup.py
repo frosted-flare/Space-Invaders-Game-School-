@@ -4,12 +4,12 @@ class Powerup(pygame.sprite.Sprite):
     def __init__(self,position,tier):
         super().__init__()
 
-        if tier == 1:
+        if tier == 1: # Different tier to allow mystery ship to drop different powerups.
             type = random.randint(1,2)
         elif tier == 2:
             type = random.randint(3,4)
 
-        if type == 1:
+        if type == 1: # Too lazy to compact this
             self.image = pygame.image.load(f"Sprites\Power_Up_1_Sprites\Powerup1.png")
         elif type == 2:
             self.image = pygame.image.load(f"Sprites\Power_Up_2_Sprites\Powerup2.png")
@@ -24,7 +24,7 @@ class Powerup(pygame.sprite.Sprite):
         self.type = type
 
 
-    def update(self):
+    def update(self): # Moves the powerup down and kills it if it falls off the screen.
         self.rect.y += self.speed
         if pygame.time.get_ticks() - self.starttime > 5000:
             self.kill()

@@ -2,20 +2,25 @@ import pygame
 import random
 
 class Laser(pygame.sprite.Sprite):
+
+    ## Laser That Gets Fired By Aliens And The Player ##
+
     def __init__(self,position,speed,screen_height,path,type,spaceship):
         super().__init__()
         
+
+        ## Image ##
+
         self.path = path
         self.sprites = []
-
-        
         image = pygame.image.load(path)
         self.sprites.append(image)
-
-
         self.image = self.sprites[0]
         self.current_image_index = 0
         self.rect = self.image.get_rect(center = position)
+
+        ## Important Variables ##
+
         self.speed = speed
         self.screen_height = screen_height
         self.type = type
@@ -27,7 +32,9 @@ class Laser(pygame.sprite.Sprite):
 
     def update(self):
 
-        if self.type == 2:
+        ## Allows for very specific bullet movements ##
+
+        if self.type == 2: # Blue bullet that tracks the player.
             self.rect.y -= self.speed/2
 
             if self.spaceship.rect.x > self.rect.x:
@@ -36,7 +43,7 @@ class Laser(pygame.sprite.Sprite):
                 self.rect.x -= 1
             else:
                 pass
-        elif self.type == 11:
+        elif self.type == 11: # Special boss bullet that tracks the player.
             if pygame.time.get_ticks() - self.start_time > 5000:
                 self.rect.y -= self.speed * 2
 
@@ -53,7 +60,7 @@ class Laser(pygame.sprite.Sprite):
         if self.rect.y > self.screen_height + 15 or self.rect.y < 0:
             self.kill()
         
-        if self.flipped == True:
+        if self.flipped == True: # Allows for bullet bouncing.
             self.flipped = False
             self.image = pygame.transform.flip(self.image,False,True)
 

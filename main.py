@@ -13,6 +13,8 @@ SCREEN_WIDTH = 448
 SCREEN_HEIGHT = 512
 OFFSET = 25
 
+## Colours ##
+
 BLUE = (0,0,255)
 RED = (255,0,0)
 BLACK = (0,0,0)
@@ -24,6 +26,8 @@ NAVY_BLUE = (0, 0, 128)
 
 font = pygame.font.Font("Fonts/ElectronPulse-9Yn42.ttf", 20)
 bigfont = pygame.font.Font("Fonts/ElectronPulse-9Yn42.ttf", 35)
+
+## Surfaces ##
 
 level_surface = font.render("LEVEL 01", False, BLUE)
 game_over_surface = font.render("GAME OVER", False, BLUE)
@@ -41,9 +45,11 @@ pygame.display.set_caption("Python Space Invaders")
 
 clock = pygame.time.Clock()
 
-## Game  ##
+## Game ##
 
 game = Game(SCREEN_WIDTH,SCREEN_HEIGHT,OFFSET)
+
+## Events ##
 
 SHOOT_LASER = pygame.USEREVENT
 pygame.time.set_timer(SHOOT_LASER,2000)
@@ -55,7 +61,7 @@ def main():
     
     while True:
 
-        ## Even Handling ##
+        ## Event Handling ##
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -101,25 +107,24 @@ def main():
         else:
             screen.blit(game_over_surface, (300,500,20,20))
 
-        if game.game_won == True:
+        if game.game_won == True: 
             screen.blit(game_won_surface, (150,250,20,20))
-        elif game.boss_countdown == True:
+        elif game.boss_countdown == True: # Shows the boss countdown.
             countdown_text_surface = bigfont.render(str(game.time_till_boss), False, BLUE)
             screen.blit(countdown_text_surface,(25,250,20,20))
             screen.blit(countdown_surface,(25,200,20,20))
 
         
-        if game.boss_active == True:
+        if game.boss_active == True: # Boss hp.
             boss_text_surface = font.render("HP:"+str(game.boss_group.sprite.hp), False, BLUE)
             screen.blit(boss_text_surface,(game.boss_group.sprite.rect.x+45,game.boss_group.sprite.rect.y-30,50,50))
 
-        x = 50
-        for life in range(game.lives):
+        for life in range(game.lives): # Shows the player hp.
             screen.blit(pygame.image.load(f"Sprites/Heart_Sprites/Heart.png"),(x,493))
             x += 50
 
        
-
+        ## Important Surfaces ##
         screen.blit(score_text_surface,(15,10,50,50))
         formated_score = str(game.score).zfill(5)
         score_surface = font.render(str(formated_score), False, BLUE)
@@ -129,7 +134,7 @@ def main():
         high_score_surface = font.render(str(formated_highscore), False, BLUE)
         screen.blit(high_score_surface,(380,10,50,50))
 
-
+        ## Updating ##
 
         game.spaceship_group.sprite.lasers_group.draw(screen)
         game.aliens_lasers_group.draw(screen)
@@ -142,7 +147,7 @@ def main():
         game.boss_group.draw(screen)
         game.target_group.draw(screen)
 
-        if game.boss_countdown == False:
+        if game.boss_countdown == False: # Hides obstacles durring target shooting
             for obstacle in game.obstacles:
                 obstacle.blocks_group.draw(screen)
 
@@ -157,4 +162,4 @@ def main():
 
 
 
-main()
+main() 

@@ -3,6 +3,9 @@ import pygame
 class Shield(pygame.sprite.Sprite):
     def __init__(self,spaceship,position,type):
         super().__init__()
+
+        ## Loading Images ##
+
         if type == 1:
             self.image = pygame.image.load(f"Sprites\Shield_Sprites\Shield1.png")
             self.spaceship = spaceship
@@ -36,7 +39,7 @@ class Shield(pygame.sprite.Sprite):
         elif self.sway < -2:
             self.sway_direction = "Right"
 
-        if self.type == 1 or self.type == 3 or self.type == 4:
+        if self.type == 1 or self.type == 3 or self.type == 4: # Allows the shield to follow the player if needed
             self.rect.x = self.spaceship.rect.x 
             self.rect.y = self.spaceship.rect.y - 20
         

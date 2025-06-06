@@ -8,10 +8,14 @@ class Spaceship(pygame.sprite.Sprite):
     def __init__(self, screen_width, screen_height,offset, game):
         super().__init__()
         
+        ## Important Variables ##
+        
         self.offset = offset
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.image = pygame.image.load("Sprites/Player_Sprites/Player1.png")
+
+        ## Sprites ##
 
         self.path = f"Sprites/Player_Sprites/"
 
@@ -54,7 +58,7 @@ class Spaceship(pygame.sprite.Sprite):
             self.laser_activated = True
 
             
-    def update_sprites(self,path):
+    def update_sprites(self,path): # Can be used if a powerup requires a different set off sprites
         self.path = path
 
         self.sprite_names = os.listdir(self.path) # Not images
@@ -69,7 +73,7 @@ class Spaceship(pygame.sprite.Sprite):
             self.image = pygame.image.load(path+"Player1.png")
 
             
-    def fire_laser(self):
+    def fire_laser(self): # Allows firing of different types of lasers
         if self.game.powerup == 4:
             laser = Laser((self.rect.centerx,self.rect.centery),5,self.screen_height,f"Sprites/Bullet_Sprites/Bullet2.png",0,self)
         elif self.game.powerup == 3:
@@ -90,23 +94,23 @@ class Spaceship(pygame.sprite.Sprite):
         self.lasers_group.update()
         self.recharge_laser()
 
-        if self.game.powerup == 3:
+        if self.game.powerup == 3: # Animation speed is the speed it takes to fire.
             self.animation_speed = 50
         else:
             self.animation_speed = 200
 
-        if pygame.time.get_ticks() - self.last_update > self.non_linear_animation_speed: # This if statment makes sure the sprite does not update every frame
+        if pygame.time.get_ticks() - self.last_update > self.non_linear_animation_speed: # This if statment makes sure the sprite does not update every frame.
             
             self.last_update = pygame.time.get_ticks()
 
 
-            if self.current_image_index != len(self.sprites) and self.laser_activated == True:
+            if self.current_image_index != len(self.sprites) and self.laser_activated == True: # Allows the animation to speed up as the laser charges
                 self.non_linear_animation_speed = self.non_linear_animation_speed * 0.8
 
                 self.image = self.sprites[self.current_image_index]
                 self.current_image_index = self.current_image_index+1
 
-            elif self.current_image_index == len(self.sprites) and self.laser_activated == True:
+            elif self.current_image_index == len(self.sprites) and self.laser_activated == True: # Shoots the laser
 
                 ## Fire the Laser ##
 
@@ -131,12 +135,12 @@ class Spaceship(pygame.sprite.Sprite):
         if self.rect.left < self.offset/2:
             self.rect.left = self.offset/2
     
-    def recharge_laser(self):
+    def recharge_laser(self): # This acts as the cooldown for the laser
         if not self.laser_ready:
             current_time = pygame.time.get_ticks()
             if current_time - self.laser_time >= self.laser_delay:
                 self.laser_ready = True
             
-    def reset(self):
+    def reset(self): 
         self.rect = self.image.get_rect(midbottom = ((self.screen_width + self.offset)/2,self.screen_height - self.offset))
         self.lasers_group.empty()

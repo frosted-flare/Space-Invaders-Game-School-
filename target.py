@@ -1,6 +1,6 @@
 import pygame
-import os
-import random
+
+
 class Target(pygame.sprite.Sprite):
 
     def __init__(self, x, y): 
@@ -16,7 +16,7 @@ class Target(pygame.sprite.Sprite):
         
 
 
-    def update(self):
+    def update(self): ## Removes itself after 10 seconds
         if self.start_time - pygame.time.get_ticks() > 10000:
             self.kill()
             

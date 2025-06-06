@@ -1,7 +1,9 @@
 import pygame
-import time
 
 class Explosion(pygame.sprite.Sprite):
+
+    ## Simple Explosion That Removes Itself After A Tiny While ## 
+
     def __init__(self,position):
         super().__init__()
     
