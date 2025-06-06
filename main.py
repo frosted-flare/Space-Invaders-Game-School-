@@ -23,10 +23,14 @@ NAVY_BLUE = (0, 0, 128)
 ## Fonts ##
 
 font = pygame.font.Font("Fonts/ElectronPulse-9Yn42.ttf", 20)
+bigfont = pygame.font.Font("Fonts/ElectronPulse-9Yn42.ttf", 35)
+
 level_surface = font.render("LEVEL 01", False, BLUE)
 game_over_surface = font.render("GAME OVER", False, BLUE)
 score_text_surface = font.render("SCORE:", False, BLUE)
 highscore_text_surface = font.render("HIGH-SCORE:", False, BLUE)
+game_won_surface = bigfont.render("YOU WON!", False, BLUE)
+countdown_surface = bigfont.render("GET READY! BOSS FIGHT", False, BLUE)
 
 ## Display ##
 
@@ -45,7 +49,7 @@ SHOOT_LASER = pygame.USEREVENT
 pygame.time.set_timer(SHOOT_LASER,2000)
 
 MYSTERYSHIP = pygame.USEREVENT + 1
-pygame.time.set_timer(MYSTERYSHIP,random.randint(8000,13000))
+pygame.time.set_timer(MYSTERYSHIP,random.randint(15000,20000))
 
 def main():
     
@@ -63,7 +67,7 @@ def main():
             
             if event.type == MYSTERYSHIP and game.run:
                 game.create_mystery_ship()
-                pygame.time.set_timer(MYSTERYSHIP, random.randint(8000,13000))
+                pygame.time.set_timer(MYSTERYSHIP, random.randint(15000,20000))
             
             keys = pygame.key.get_pressed()
             if keys[pygame.K_SPACE] and game.run == False:
@@ -80,6 +84,8 @@ def main():
             game.check_for_collisions()
             game.check_for_powerups()
             game.shields_group.update()
+            game.check_for_boss()
+            game.boss_group.update()
 
         ## Drawing ##
         screen.fill(WHITE)
@@ -93,10 +99,22 @@ def main():
         else:
             screen.blit(game_over_surface, (300,500,20,20))
 
+        if game.game_won == True:
+            screen.blit(game_won_surface, (150,250,20,20))
+        elif game.boss_countdown == True:
+            screen.blit(countdown_surface,(25,250,20,20))
+
+        
+        if game.boss_active == True:
+            boss_text_surface = font.render("HP:"+str(game.boss_group.sprite.hp), False, BLUE)
+            screen.blit(boss_text_surface,(game.boss_group.sprite.rect.x+55,game.boss_group.sprite.rect.y-50,50,50))
+
         x = 50
         for life in range(game.lives):
             screen.blit(pygame.image.load(f"Sprites/Heart_Sprites/Heart.png"),(x,493))
             x += 50
+
+       
 
         screen.blit(score_text_surface,(15,10,50,50))
         formated_score = str(game.score).zfill(5)
@@ -117,6 +135,7 @@ def main():
         game.explosions_group.draw(screen)
         game.powerup_group.draw(screen)
         game.shields_group.draw(screen)
+        game.boss_group.draw(screen)
 
         for obstacle in game.obstacles:
             obstacle.blocks_group.draw(screen)

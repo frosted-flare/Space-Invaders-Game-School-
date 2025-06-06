@@ -1,5 +1,5 @@
 import pygame
-import os
+import random
 
 class Laser(pygame.sprite.Sprite):
     def __init__(self,position,speed,screen_height,path,type,spaceship):
@@ -34,6 +34,15 @@ class Laser(pygame.sprite.Sprite):
                 self.rect.x -= 1
             else:
                 pass
+        elif self.type == 11:
+            self.rect.y -= self.speed
+
+            if self.spaceship.rect.x > self.rect.x:
+                self.rect.x += random.randint(4,20)/10
+            elif self.spaceship.rect.x < self.rect.x:
+                self.rect.x -= random.randint(4,20)/10
+            else:
+                pass    
         else:
             self.rect.y -= self.speed
 

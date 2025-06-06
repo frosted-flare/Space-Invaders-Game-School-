@@ -3,7 +3,6 @@ import pygame
 class Shield(pygame.sprite.Sprite):
     def __init__(self,spaceship,position,type):
         super().__init__()
-        print(type)
         if type == 1:
             self.image = pygame.image.load(f"Sprites\Shield_Sprites\Shield1.png")
             self.spaceship = spaceship
