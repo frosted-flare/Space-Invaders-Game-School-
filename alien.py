@@ -26,7 +26,7 @@ class Alien(pygame.sprite.Sprite):
         self.ANIMATION_SPEED = speed
         self.last_update = 0
         self.last_move = 0
-        if random.randint(1,5) == 1:
+        if random.randint(1,10) == 1:
             self.contains_powerup = True
         else:
             self.contains_powerup = False

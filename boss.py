@@ -38,7 +38,7 @@ class Boss(pygame.sprite.Sprite):
         self.phase = 1
         self.is_firing = True
         self.shots_fired = 0
-        self.hp = 50
+        self.hp = 100
         self.laser = laser
         self.spaceship = spaceship
         self.PHASE_ONE_SPEED = 10000
@@ -46,6 +46,7 @@ class Boss(pygame.sprite.Sprite):
         self.PHASE_THREE_SPEED = 10000
 
         self.game = game
+        self.glich_bullets_spawned = 0
 
         
 
@@ -115,7 +116,7 @@ class Boss(pygame.sprite.Sprite):
 
                         
 
-            
+                
 
                 elif self.phase == 2:
                     if pygame.time.get_ticks() - self.last_phase_update > self.PHASE_TWO_SPEED:
@@ -145,11 +146,12 @@ class Boss(pygame.sprite.Sprite):
                         self.rect = self.image.get_rect(topleft = self.rect.topleft)
                         self.current_image_index = self.current_image_index+1
                    
-                    elif self.is_firing == True and self.current_image_index == 2:
-                            self.image = self.sprites[3][4]
-                            self.rect = self.image.get_rect(topleft = self.rect.topleft)
-                            laser_sprite = self.laser((self.rect.centerx-10,self.rect.centery), -3,self.screen_height,f"Sprites/Bullet_Sprites/Boss_Bullet_2.png",11,self.spaceship)
-                            self.game.aliens_lasers_group.add(laser_sprite)
+                    elif self.is_firing == True and self.current_image_index == 2 and self.glich_bullets_spawned <= 35:
+                        self.glich_bullets_spawned += 1
+                        self.image = self.sprites[3][4]
+                        self.rect = self.image.get_rect(topleft = self.rect.topleft)
+                        laser_sprite = self.laser((self.rect.centerx-10,self.rect.centery+50), -3,self.screen_height,f"Sprites/Bullet_Sprites/Boss_Bullet_2.png",11,self.spaceship)
+                        self.game.aliens_lasers_group.add(laser_sprite)
 
                     elif self.is_firing == False and self.current_image_index < 6:
                         self.image = self.sprites[3][self.current_image_index]
@@ -160,5 +162,7 @@ class Boss(pygame.sprite.Sprite):
                         self.phase = 1
                         self.last_phase_update = pygame.time.get_ticks()
                         self.is_firing = True
+                        self.glich_bullets_spawned = 0
+
 
             

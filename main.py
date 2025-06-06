@@ -86,6 +86,8 @@ def main():
             game.shields_group.update()
             game.check_for_boss()
             game.boss_group.update()
+            game.target_group.update()
+            game.create_targets()
 
         ## Drawing ##
         screen.fill(WHITE)
@@ -102,12 +104,14 @@ def main():
         if game.game_won == True:
             screen.blit(game_won_surface, (150,250,20,20))
         elif game.boss_countdown == True:
-            screen.blit(countdown_surface,(25,250,20,20))
+            countdown_text_surface = bigfont.render(str(game.time_till_boss), False, BLUE)
+            screen.blit(countdown_text_surface,(25,250,20,20))
+            screen.blit(countdown_surface,(25,200,20,20))
 
         
         if game.boss_active == True:
             boss_text_surface = font.render("HP:"+str(game.boss_group.sprite.hp), False, BLUE)
-            screen.blit(boss_text_surface,(game.boss_group.sprite.rect.x+55,game.boss_group.sprite.rect.y-50,50,50))
+            screen.blit(boss_text_surface,(game.boss_group.sprite.rect.x+45,game.boss_group.sprite.rect.y-30,50,50))
 
         x = 50
         for life in range(game.lives):
@@ -136,9 +140,11 @@ def main():
         game.powerup_group.draw(screen)
         game.shields_group.draw(screen)
         game.boss_group.draw(screen)
+        game.target_group.draw(screen)
 
-        for obstacle in game.obstacles:
-            obstacle.blocks_group.draw(screen)
+        if game.boss_countdown == False:
+            for obstacle in game.obstacles:
+                obstacle.blocks_group.draw(screen)
 
         
 

@@ -9,6 +9,7 @@ from explosion import Explosion
 from powerup import Powerup
 from shield import Shield
 from boss import Boss
+from target import Target
 
 class Game:
 
@@ -28,6 +29,7 @@ class Game:
         self.aliens_direction = 1
         self.aliens_lasers_group = pygame.sprite.Group()
         self.mystery_ship_group = pygame.sprite.GroupSingle()
+        self.target_group = pygame.sprite.Group()
         self.lives = 3
         self.run = True
         self.score = 0
@@ -49,6 +51,8 @@ class Game:
         self.boss_active = False
         self.boss_group = pygame.sprite.GroupSingle()
         self.game_won = False
+        self.time_till_boss = 0
+        self.last_target = pygame.time.get_ticks()
         
 
     def create_obstacles(self):
@@ -122,7 +126,10 @@ class Game:
     
     def create_boss(self):
         if self.boss_active == False:
+            self.time_till_boss = 31000 - (pygame.time.get_ticks() - self.boss_start_countdown)
             if pygame.time.get_ticks() - self.boss_start_countdown > 31000:
+                self.obstacles = self.create_obstacles()
+                self.target_group.empty()
                 self.boss_active = True
                 self.boss_countdown = False
                 self.boss_group.add(Boss(100,100,200,self.screen_width,self.screen_height,self.offset,Laser,self,self.spaceship_group.sprite))
@@ -139,16 +146,21 @@ class Game:
                     pygame.mixer.music.play(-1)
                     self.lives = 3
 
-
                 self.create_boss()
-                
-                
 
         if self.boss_active == True:
             if self.boss_group.sprite.hp <= 0:
                 self.boss_group.sprite.kill()
                 self.boss_active = False
                 self.game_won = True
+                self.boss_countdown = False
+
+    def create_targets(self):
+        if self.boss_countdown == True and self.game_won == False:
+            if pygame.time.get_ticks() - self.last_target > 2000:
+                self.last_target = pygame.time.get_ticks()
+                target =  Target(random.randint(0,400),random.randint(0,400))
+                self.target_group.add(target)
 
     def check_for_collisions(self):
 
@@ -159,6 +171,8 @@ class Game:
 
             for laser_sprite in self.spaceship_group.sprite.lasers_group:
                 aliens_hit = pygame.sprite.spritecollide(laser_sprite, self.aliens_group, False)
+                targets_hit = pygame.sprite.spritecollide(laser_sprite, self.target_group, False)
+
                 if self.boss_active == True:
                     boss_hit = pygame.sprite.spritecollide(laser_sprite, self.boss_group, False)
 
@@ -205,15 +219,22 @@ class Game:
                         alien.kill()
                         self.Alien_speed -= 15
 
-                    
-
+                if targets_hit:
+                    self.explosion_sound.play()
+                    self.explosion_sound.set_volume(0.15)
+                    for target in targets_hit:
+                        self.score += 500
+                        self.check_for_highscore()
+                        laser_sprite.kill()
+                        self.explosions_group.add(Explosion((target.rect.centerx,target.rect.centery)))
+                        target.kill()
 
                 
-
-                for obstacle in self.obstacles:
-                    if pygame.sprite.spritecollide(laser_sprite,obstacle.blocks_group,True) :
-                        laser_sprite.kill()
-            
+                if self.boss_countdown == False:
+                    for obstacle in self.obstacles:
+                        if pygame.sprite.spritecollide(laser_sprite,obstacle.blocks_group,True):
+                            laser_sprite.kill()
+                
         ## Aliens ##
         
         if self.aliens_lasers_group: # For alien lasers
@@ -232,7 +253,7 @@ class Game:
                     self.explosion_sound.play()
                     self.explosion_sound.set_volume(0.15)
                     self.explosions_group.add(Explosion((alien_laser_sprite.rect.centerx,alien_laser_sprite.rect.centery)))
-                    if self.powerup == False:
+                    if self.powerup == False or 2 or self.boss_active:
                         self.lives -= 1
                         if self.lives == 0:
                             self.game_over()
@@ -255,7 +276,7 @@ class Game:
                             alien.kill()
 
 
-                if alien_laser_sprite.type != 3 and alien_laser_sprite.bounced == False:
+                if alien_laser_sprite.type != 3 and alien_laser_sprite.bounced == False and self.boss_countdown == False:
 
                     for obstacle in self.obstacles:
                             
@@ -274,9 +295,10 @@ class Game:
                             self.explosion_sound.play()
                             self.explosion_sound.set_volume(0.15)
 
-        
+       
+ 
 
-        if self.aliens_group:
+        if self.aliens_group and self.boss_countdown == False:
             for alien in self.aliens_group:
                 for obstacle in self.obstacles:
                     pygame.sprite.spritecollide(alien, obstacle.blocks_group, True)
@@ -294,7 +316,7 @@ class Game:
                     powerup.kill()
                     if self.powerup == 1:
                         self.shields_group.add(Shield(self.spaceship_group.sprite,False,1))
-                    elif self.powerup == 2:
+                    elif self.powerup == 2 and self.boss_countdown == False:
                         for obstacle in self.obstacles:
                             self.shields_group.add(Shield(False,obstacle.position,2))
                     elif self.powerup == 3:

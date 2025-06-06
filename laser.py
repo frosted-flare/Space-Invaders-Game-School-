@@ -22,6 +22,8 @@ class Laser(pygame.sprite.Sprite):
         self.spaceship = spaceship
         self.bounced = False
         self.flipped = False
+        self.start_time = pygame.time.get_ticks()
+        self.offset = random.randrange(-200,200)
 
     def update(self):
 
@@ -35,12 +37,13 @@ class Laser(pygame.sprite.Sprite):
             else:
                 pass
         elif self.type == 11:
-            self.rect.y -= self.speed
+            if pygame.time.get_ticks() - self.start_time > 5000:
+                self.rect.y -= self.speed * 2
 
-            if self.spaceship.rect.x > self.rect.x:
-                self.rect.x += random.randint(4,20)/10
-            elif self.spaceship.rect.x < self.rect.x:
-                self.rect.x -= random.randint(4,20)/10
+            if self.spaceship.rect.x + self.offset > self.rect.x:
+                self.rect.x += 1
+            elif self.spaceship.rect.x + self.offset < self.rect.x:
+                self.rect.x -= 1
             else:
                 pass    
         else:
