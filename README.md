@@ -1,6 +1,6 @@
 This is my simple space invaders game for school.
 
-User Guide.
+User Guide:
 
 Welcome To Space Invaders.
 
