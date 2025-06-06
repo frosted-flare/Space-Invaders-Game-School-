@@ -22,6 +22,6 @@ The mystery ship drops 2 types of power-ups that last for 10 seconds:
   The second is the cat command. It gives Mux a bright pink shield and 4x enemy piercing bullets.
 
 Once you have defeated all the enemys you will get 31 seconds to shoot as many targets as possible while waiting for the boss to appear.
-After this, the boss fight starts. The boss has 3 phases. First he shots double rounds of anti shield bullets, then he rests for a bit, and lastly releases deadly blue screen minions that dive bomb Mux.
+After this, the boss fight starts. The boss has 3 phases. First he shots double rounds of anti shield bullets, then he rests for a bit, and lastly releases deadly blue screen minions that dive bomb Mux. Be warned, the boss normal bullets, but bullets that pierce your shields.
 
 Good luck on your playthrough future hero.
