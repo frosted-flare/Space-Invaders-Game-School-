@@ -118,7 +118,8 @@ def main():
         if game.boss_active == True: # Boss hp.
             boss_text_surface = font.render("HP:"+str(game.boss_group.sprite.hp), False, BLUE)
             screen.blit(boss_text_surface,(game.boss_group.sprite.rect.x+45,game.boss_group.sprite.rect.y-30,50,50))
-
+    
+        x = 50
         for life in range(game.lives): # Shows the player hp.
             screen.blit(pygame.image.load(f"Sprites/Heart_Sprites/Heart.png"),(x,493))
             x += 50
